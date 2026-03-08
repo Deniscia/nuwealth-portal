@@ -142,6 +142,254 @@ export type Database = {
         }
         Relationships: []
       }
+      tracker_budget: {
+        Row: {
+          amount: number
+          category: string
+          created_at: string
+          id: string
+          item_name: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          amount?: number
+          category?: string
+          created_at?: string
+          id?: string
+          item_name?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          category?: string
+          created_at?: string
+          id?: string
+          item_name?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      tracker_debts: {
+        Row: {
+          balance: number
+          created_at: string
+          creditor: string
+          id: string
+          interest_rate: number
+          min_payment: number
+          payoff_order: number
+          total_paid: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          balance?: number
+          created_at?: string
+          creditor?: string
+          id?: string
+          interest_rate?: number
+          min_payment?: number
+          payoff_order?: number
+          total_paid?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          balance?: number
+          created_at?: string
+          creditor?: string
+          id?: string
+          interest_rate?: number
+          min_payment?: number
+          payoff_order?: number
+          total_paid?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      tracker_goals: {
+        Row: {
+          created_at: string
+          current_amount: number
+          goal_name: string
+          id: string
+          monthly_contribution: number
+          status: string
+          target_amount: number
+          target_date: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          current_amount?: number
+          goal_name?: string
+          id?: string
+          monthly_contribution?: number
+          status?: string
+          target_amount?: number
+          target_date?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          current_amount?: number
+          goal_name?: string
+          id?: string
+          monthly_contribution?: number
+          status?: string
+          target_amount?: number
+          target_date?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      tracker_investment_history: {
+        Row: {
+          balance: number
+          created_at: string
+          id: string
+          investment_id: string
+          recorded_at: string
+          user_id: string
+        }
+        Insert: {
+          balance?: number
+          created_at?: string
+          id?: string
+          investment_id: string
+          recorded_at?: string
+          user_id: string
+        }
+        Update: {
+          balance?: number
+          created_at?: string
+          id?: string
+          investment_id?: string
+          recorded_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tracker_investment_history_investment_id_fkey"
+            columns: ["investment_id"]
+            isOneToOne: false
+            referencedRelation: "tracker_investments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tracker_investments: {
+        Row: {
+          account_type: string
+          balance: number
+          created_at: string
+          id: string
+          institution: string
+          monthly_contribution: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          account_type?: string
+          balance?: number
+          created_at?: string
+          id?: string
+          institution?: string
+          monthly_contribution?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          account_type?: string
+          balance?: number
+          created_at?: string
+          id?: string
+          institution?: string
+          monthly_contribution?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      tracker_net_worth: {
+        Row: {
+          assets: Json
+          created_at: string
+          id: string
+          liabilities: Json
+          net_worth: number
+          recorded_at: string
+          total_assets: number
+          total_liabilities: number
+          user_id: string
+        }
+        Insert: {
+          assets?: Json
+          created_at?: string
+          id?: string
+          liabilities?: Json
+          net_worth?: number
+          recorded_at?: string
+          total_assets?: number
+          total_liabilities?: number
+          user_id: string
+        }
+        Update: {
+          assets?: Json
+          created_at?: string
+          id?: string
+          liabilities?: Json
+          net_worth?: number
+          recorded_at?: string
+          total_assets?: number
+          total_liabilities?: number
+          user_id?: string
+        }
+        Relationships: []
+      }
+      tracker_savings: {
+        Row: {
+          created_at: string
+          current_amount: number
+          fund_name: string
+          id: string
+          is_emergency_fund: boolean
+          monthly_contribution: number
+          target_amount: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          current_amount?: number
+          fund_name?: string
+          id?: string
+          is_emergency_fund?: boolean
+          monthly_contribution?: number
+          target_amount?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          current_amount?: number
+          fund_name?: string
+          id?: string
+          is_emergency_fund?: boolean
+          monthly_contribution?: number
+          target_amount?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           id: string

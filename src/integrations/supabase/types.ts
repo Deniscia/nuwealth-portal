@@ -89,6 +89,54 @@ export type Database = {
         }
         Relationships: []
       }
+      workbook_completions: {
+        Row: {
+          completed_at: string
+          id: string
+          user_id: string
+          workbook_id: string
+        }
+        Insert: {
+          completed_at?: string
+          id?: string
+          user_id: string
+          workbook_id: string
+        }
+        Update: {
+          completed_at?: string
+          id?: string
+          user_id?: string
+          workbook_id?: string
+        }
+        Relationships: []
+      }
+      workbook_responses: {
+        Row: {
+          created_at: string
+          id: string
+          responses: Json
+          updated_at: string
+          user_id: string
+          workbook_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          responses?: Json
+          updated_at?: string
+          user_id: string
+          workbook_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          responses?: Json
+          updated_at?: string
+          user_id?: string
+          workbook_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

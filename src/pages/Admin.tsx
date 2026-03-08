@@ -28,11 +28,11 @@ const Admin = () => {
   const [replyText, setReplyText] = useState("");
   const [sending, setSending] = useState(false);
 
-  if (role !== "admin") return <Navigate to="/dashboard" replace />;
-
   useEffect(() => {
-    fetchEscalations();
-  }, []);
+    if (role === "admin") fetchEscalations();
+  }, [role]);
+
+  if (role !== "admin") return <Navigate to="/dashboard" replace />;
 
   const fetchEscalations = async () => {
     const { data } = await supabase

@@ -42,6 +42,8 @@ const AppRoutes = () => (
     <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
     <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
     <Route path="/assignments" element={<ProtectedRoute><Assignments /></ProtectedRoute>} />
+    <Route path="/assignments/:phaseNumber" element={<ProtectedRoute><PhaseDetail /></ProtectedRoute>} />
+    <Route path="/assignments/workbook/:workbookId" element={<ProtectedRoute><WorkbookPage /></ProtectedRoute>} />
     <Route path="/tracker" element={<ProtectedRoute><Tracker /></ProtectedRoute>} />
     <Route path="/ai-coach" element={<ProtectedRoute><AICoach /></ProtectedRoute>} />
     <Route path="/admin" element={<ProtectedRoute><Admin /></ProtectedRoute>} />

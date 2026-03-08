@@ -8,6 +8,8 @@ import { AppLayout } from "@/components/AppLayout";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import Assignments from "./pages/Assignments";
+import PhaseDetail from "./pages/PhaseDetail";
+import WorkbookPage from "./pages/WorkbookPage";
 import Tracker from "./pages/Tracker";
 import AICoach from "./pages/AICoach";
 import Admin from "./pages/Admin";

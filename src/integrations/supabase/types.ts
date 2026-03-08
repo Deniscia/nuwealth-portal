@@ -14,6 +14,77 @@ export type Database = {
   }
   public: {
     Tables: {
+      admin_replies: {
+        Row: {
+          admin_user_id: string
+          created_at: string
+          escalation_id: string
+          id: string
+          read_by_member: boolean
+          reply_text: string
+        }
+        Insert: {
+          admin_user_id: string
+          created_at?: string
+          escalation_id: string
+          id?: string
+          read_by_member?: boolean
+          reply_text: string
+        }
+        Update: {
+          admin_user_id?: string
+          created_at?: string
+          escalation_id?: string
+          id?: string
+          read_by_member?: boolean
+          reply_text?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "admin_replies_escalation_id_fkey"
+            columns: ["escalation_id"]
+            isOneToOne: false
+            referencedRelation: "escalations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      escalations: {
+        Row: {
+          created_at: string
+          id: string
+          member_note: string | null
+          member_response: string | null
+          question_text: string
+          status: string
+          updated_at: string
+          user_id: string
+          workbook_name: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          member_note?: string | null
+          member_response?: string | null
+          question_text: string
+          status?: string
+          updated_at?: string
+          user_id: string
+          workbook_name: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          member_note?: string | null
+          member_response?: string | null
+          question_text?: string
+          status?: string
+          updated_at?: string
+          user_id?: string
+          workbook_name?: string
+        }
+        Relationships: []
+      }
       phase_unlocks: {
         Row: {
           id: string

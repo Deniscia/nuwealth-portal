@@ -14,6 +14,30 @@ export type Database = {
   }
   public: {
     Tables: {
+      activity_log: {
+        Row: {
+          activity_date: string
+          activity_type: string
+          created_at: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          activity_date?: string
+          activity_type?: string
+          created_at?: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          activity_date?: string
+          activity_type?: string
+          created_at?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       admin_replies: {
         Row: {
           admin_user_id: string
@@ -113,6 +137,7 @@ export type Database = {
           full_name: string
           id: string
           last_active_date: string | null
+          longest_streak: number
           overall_progress: number
           streak_days: number
           updated_at: string
@@ -124,6 +149,7 @@ export type Database = {
           full_name?: string
           id?: string
           last_active_date?: string | null
+          longest_streak?: number
           overall_progress?: number
           streak_days?: number
           updated_at?: string
@@ -135,6 +161,7 @@ export type Database = {
           full_name?: string
           id?: string
           last_active_date?: string | null
+          longest_streak?: number
           overall_progress?: number
           streak_days?: number
           updated_at?: string
@@ -386,6 +413,27 @@ export type Database = {
           monthly_contribution?: number
           target_amount?: number
           updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_badges: {
+        Row: {
+          badge_key: string
+          earned_at: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          badge_key: string
+          earned_at?: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          badge_key?: string
+          earned_at?: string
+          id?: string
           user_id?: string
         }
         Relationships: []

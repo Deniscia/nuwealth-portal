@@ -10,6 +10,7 @@ interface AuthContextType {
     current_phase: number;
     overall_progress: number;
     streak_days: number;
+    longest_streak: number;
   } | null;
   role: "admin" | "member" | null;
   loading: boolean;

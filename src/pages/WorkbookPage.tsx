@@ -6,6 +6,7 @@ import { useWorkbookData } from "@/hooks/useWorkbookData";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { WorkbookFieldRenderer } from "@/components/workbook/WorkbookFieldRenderer";
+import { CoachChatPanel } from "@/components/workbook/CoachChatPanel";
 import { Button } from "@/components/ui/button";
 import {
   AlertDialog,
@@ -30,7 +31,10 @@ const WorkbookPage = () => {
   const [showOutOfOrderWarning, setShowOutOfOrderWarning] = useState(false);
   const [recommendedWorkbook, setRecommendedWorkbook] = useState<string | null>(null);
 
-  // Debounced save on keystroke
+  // Chat panel state
+  const [chatOpen, setChatOpen] = useState(false);
+  const [chatQuestion, setChatQuestion] = useState("");
+
   const saveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const handleFieldChange = useCallback(
@@ -42,21 +46,21 @@ const WorkbookPage = () => {
     [updateField, save]
   );
 
-  // Check completion status and out-of-order warning
+  const handleOpenChat = useCallback((questionText: string) => {
+    setChatQuestion(questionText);
+    setChatOpen(true);
+  }, []);
+
   useEffect(() => {
     if (!user || !workbook) return;
-
     supabase
       .from("workbook_completions")
       .select("workbook_id")
       .eq("user_id", user.id)
       .then(({ data }) => {
         const completedIds = new Set(data?.map((d) => d.workbook_id) || []);
-        if (workbookId && completedIds.has(workbookId)) {
-          setIsCompleted(true);
-        }
+        if (workbookId && completedIds.has(workbookId)) setIsCompleted(true);
 
-        // Check if out of order
         const phase = getPhase(workbook.phaseNumber);
         if (phase) {
           const recommended = getRecommendedWorkbook(phase, completedIds);
@@ -102,114 +106,122 @@ const WorkbookPage = () => {
   };
 
   return (
-    <div className="max-w-3xl mx-auto space-y-6 animate-fade-in pb-24">
-      {/* Header */}
-      <div className="flex items-center gap-3">
-        <Button variant="ghost" size="icon" onClick={() => navigate(`/assignments/${workbook.phaseNumber}`)}>
-          <ArrowLeft className="h-5 w-5" />
-        </Button>
-        <div className="flex-1">
-          <p className="text-xs font-display font-semibold text-primary uppercase tracking-wider">
-            Phase {workbook.phaseNumber}
-          </p>
-          <h1 className="text-2xl font-display font-bold text-foreground">{workbook.title}</h1>
+    <>
+      <div className="max-w-3xl mx-auto space-y-6 animate-fade-in pb-24">
+        {/* Header */}
+        <div className="flex items-center gap-3">
+          <Button variant="ghost" size="icon" onClick={() => navigate(`/assignments/${workbook.phaseNumber}`)}>
+            <ArrowLeft className="h-5 w-5" />
+          </Button>
+          <div className="flex-1">
+            <p className="text-xs font-display font-semibold text-primary uppercase tracking-wider">
+              Phase {workbook.phaseNumber}
+            </p>
+            <h1 className="text-2xl font-display font-bold text-foreground">{workbook.title}</h1>
+          </div>
+          <div className="flex items-center gap-2 text-sm text-muted-foreground font-body">
+            {saving ? (
+              <>
+                <Loader2 className="h-4 w-4 animate-spin" />
+                <span>Saving...</span>
+              </>
+            ) : lastSaved ? (
+              <>
+                <Save className="h-4 w-4 text-primary" />
+                <span>Saved {formatTime(lastSaved)}</span>
+              </>
+            ) : null}
+          </div>
         </div>
-        <div className="flex items-center gap-2 text-sm text-muted-foreground font-body">
-          {saving ? (
-            <>
-              <Loader2 className="h-4 w-4 animate-spin" />
-              <span>Saving...</span>
-            </>
-          ) : lastSaved ? (
-            <>
-              <Save className="h-4 w-4 text-primary" />
-              <span>Saved {formatTime(lastSaved)}</span>
-            </>
-          ) : null}
-        </div>
-      </div>
 
-      {/* Out of order warning */}
-      {showOutOfOrderWarning && (
-        <div className="bg-primary/10 border border-primary/30 rounded-xl p-4 flex items-start gap-3">
-          <span className="text-primary text-lg">⚡</span>
-          <div>
-            <p className="text-sm font-body text-foreground">
-              We recommend completing workbooks in order for the best results. You're welcome to continue, but consider starting with{" "}
-              <strong>{recommendedWorkbook}</strong> first.
+        {showOutOfOrderWarning && (
+          <div className="bg-primary/10 border border-primary/30 rounded-xl p-4 flex items-start gap-3">
+            <span className="text-primary text-lg">⚡</span>
+            <div>
+              <p className="text-sm font-body text-foreground">
+                We recommend completing workbooks in order for the best results. You're welcome to continue, but consider starting with{" "}
+                <strong>{recommendedWorkbook}</strong> first.
+              </p>
+            </div>
+            <button onClick={() => setShowOutOfOrderWarning(false)} className="text-muted-foreground hover:text-foreground ml-auto">
+              ✕
+            </button>
+          </div>
+        )}
+
+        {isCompleted && (
+          <div className="bg-primary/10 border border-primary/30 rounded-xl p-4 flex items-center gap-3">
+            <Check className="h-5 w-5 text-primary" />
+            <p className="text-sm font-body text-foreground font-medium">
+              You've completed this workbook. You can still review and edit your responses.
             </p>
           </div>
-          <button onClick={() => setShowOutOfOrderWarning(false)} className="text-muted-foreground hover:text-foreground ml-auto">
-            ✕
-          </button>
-        </div>
-      )}
+        )}
 
-      {/* Completed banner */}
-      {isCompleted && (
-        <div className="bg-primary/10 border border-primary/30 rounded-xl p-4 flex items-center gap-3">
-          <Check className="h-5 w-5 text-primary" />
-          <p className="text-sm font-body text-foreground font-medium">
-            You've completed this workbook. You can still review and edit your responses.
-          </p>
-        </div>
-      )}
-
-      {loading ? (
-        <div className="flex justify-center py-12">
-          <Loader2 className="h-8 w-8 animate-spin text-primary" />
-        </div>
-      ) : (
-        <>
-          {/* Sections */}
-          {workbook.sections.map((section) => (
-            <div key={section.id} className="bg-card rounded-2xl border border-border shadow-card p-6 space-y-6">
-              <div>
-                <h2 className="text-xl font-display font-bold text-foreground">{section.title}</h2>
-                {section.description && (
-                  <p className="mt-1 text-sm text-muted-foreground font-body">{section.description}</p>
-                )}
+        {loading ? (
+          <div className="flex justify-center py-12">
+            <Loader2 className="h-8 w-8 animate-spin text-primary" />
+          </div>
+        ) : (
+          <>
+            {workbook.sections.map((section) => (
+              <div key={section.id} className="bg-card rounded-2xl border border-border shadow-card p-6 space-y-6">
+                <div>
+                  <h2 className="text-xl font-display font-bold text-foreground">{section.title}</h2>
+                  {section.description && (
+                    <p className="mt-1 text-sm text-muted-foreground font-body">{section.description}</p>
+                  )}
+                </div>
+                <div className="space-y-6">
+                  {section.fields.map((field) => (
+                    <WorkbookFieldRenderer
+                      key={field.id}
+                      field={field}
+                      value={responses[field.id]}
+                      onChange={(v) => handleFieldChange(field.id, v)}
+                      onOpenChat={handleOpenChat}
+                    />
+                  ))}
+                </div>
               </div>
-              <div className="space-y-6">
-                {section.fields.map((field) => (
-                  <WorkbookFieldRenderer
-                    key={field.id}
-                    field={field}
-                    value={responses[field.id]}
-                    onChange={(v) => handleFieldChange(field.id, v)}
-                  />
-                ))}
-              </div>
-            </div>
-          ))}
+            ))}
 
-          {/* Mark Complete */}
-          {!isCompleted && (
-            <div className="flex justify-center pt-4">
-              <AlertDialog>
-                <AlertDialogTrigger asChild>
-                  <Button variant="gold" size="lg" className="gap-2">
-                    <Check className="h-5 w-5" /> Mark as Complete
-                  </Button>
-                </AlertDialogTrigger>
-                <AlertDialogContent>
-                  <AlertDialogHeader>
-                    <AlertDialogTitle className="font-display">Complete this workbook?</AlertDialogTitle>
-                    <AlertDialogDescription className="font-body">
-                      Your responses will be saved and this workbook will be marked as complete. You can still edit your responses later.
-                    </AlertDialogDescription>
-                  </AlertDialogHeader>
-                  <AlertDialogFooter>
-                    <AlertDialogCancel>Cancel</AlertDialogCancel>
-                    <AlertDialogAction onClick={handleMarkComplete}>Yes, mark as complete</AlertDialogAction>
-                  </AlertDialogFooter>
-                </AlertDialogContent>
-              </AlertDialog>
-            </div>
-          )}
-        </>
-      )}
-    </div>
+            {!isCompleted && (
+              <div className="flex justify-center pt-4">
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button variant="gold" size="lg" className="gap-2">
+                      <Check className="h-5 w-5" /> Mark as Complete
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle className="font-display">Complete this workbook?</AlertDialogTitle>
+                      <AlertDialogDescription className="font-body">
+                        Your responses will be saved and this workbook will be marked as complete. You can still edit your responses later.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogAction onClick={handleMarkComplete}>Yes, mark as complete</AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+              </div>
+            )}
+          </>
+        )}
+      </div>
+
+      {/* Coach Chat Panel */}
+      <CoachChatPanel
+        open={chatOpen}
+        onClose={() => setChatOpen(false)}
+        workbookName={workbook.title}
+        questionText={chatQuestion}
+        memberResponse={responses[chatQuestion] || ""}
+      />
+    </>
   );
 };
 

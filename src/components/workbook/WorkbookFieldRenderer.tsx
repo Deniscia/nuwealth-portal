@@ -1,4 +1,7 @@
+import { useState } from "react";
+import { Lightbulb, MessageCircle } from "lucide-react";
 import { WorkbookField } from "@/data/workbooks";
+import { GUIDED_PROMPTS } from "@/data/guidedPrompts";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -12,9 +15,65 @@ interface Props {
   field: WorkbookField;
   value: any;
   onChange: (value: any) => void;
+  onOpenChat?: (questionText: string) => void;
 }
 
-export function WorkbookFieldRenderer({ field, value, onChange }: Props) {
+function GuidedPromptsCard({ fieldId, onOpenChat, questionText }: { fieldId: string; onOpenChat?: (q: string) => void; questionText: string }) {
+  const [showPrompts, setShowPrompts] = useState(false);
+  const prompts = GUIDED_PROMPTS[fieldId];
+  if (!prompts) return null;
+
+  return (
+    <div className="space-y-2">
+      {!showPrompts ? (
+        <button
+          onClick={() => setShowPrompts(true)}
+          className="inline-flex items-center gap-2 text-xs font-body text-primary hover:text-primary/80 transition-colors"
+        >
+          <Lightbulb className="h-3.5 w-3.5" />
+          Help me think
+        </button>
+      ) : (
+        <div className="rounded-xl border-l-4 border-l-primary bg-primary/5 p-4 space-y-3 animate-fade-in">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-display font-semibold text-primary uppercase tracking-wider">
+              Guiding Prompts
+            </span>
+            <button onClick={() => setShowPrompts(false)} className="text-xs text-muted-foreground hover:text-foreground">
+              ✕
+            </button>
+          </div>
+          <ul className="space-y-2">
+            {prompts.map((prompt, i) => (
+              <li key={i} className="text-sm font-body text-foreground/80 flex items-start gap-2">
+                <span className="text-primary mt-0.5">•</span>
+                <span>{prompt}</span>
+              </li>
+            ))}
+          </ul>
+          {onOpenChat && (
+            <button
+              onClick={() => onOpenChat(questionText)}
+              className="inline-flex items-center gap-2 text-xs font-body text-primary hover:text-primary/80 transition-colors mt-1"
+            >
+              <MessageCircle className="h-3.5 w-3.5" />
+              Still stuck? Chat with your coach
+            </button>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
+export function WorkbookFieldRenderer({ field, value, onChange, onOpenChat }: Props) {
+  const isOpenEnded = field.type === "textarea";
+
+  const renderHelper = () => {
+    if (!isOpenEnded) return null;
+    return <GuidedPromptsCard fieldId={field.id} onOpenChat={onOpenChat} questionText={field.label} />;
+  };
+
   switch (field.type) {
     case "textarea":
       return (
@@ -27,6 +86,7 @@ export function WorkbookFieldRenderer({ field, value, onChange }: Props) {
             placeholder={field.placeholder}
             className="min-h-[120px] bg-background border-border focus:border-primary"
           />
+          {renderHelper()}
         </div>
       );
 
@@ -177,7 +237,7 @@ export function WorkbookFieldRenderer({ field, value, onChange }: Props) {
   }
 }
 
-function RepeatingField({ field, value, onChange }: Props) {
+function RepeatingField({ field, value, onChange }: { field: WorkbookField; value: any; onChange: (v: any) => void }) {
   const rows: Record<string, any>[] = Array.isArray(value) ? value : [];
 
   const addRow = () => {

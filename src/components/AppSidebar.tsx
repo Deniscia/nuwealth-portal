@@ -2,6 +2,7 @@ import { LayoutDashboard, ClipboardList, BarChart3, Bot, ShieldCheck, LogOut } f
 import { NavLink } from "@/components/NavLink";
 import { useLocation } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
+import { useNotificationCount } from "@/hooks/useNotificationCount";
 import {
   Sidebar,
   SidebarContent,
@@ -27,6 +28,7 @@ export function AppSidebar() {
   const collapsed = state === "collapsed";
   const location = useLocation();
   const { role, signOut, profile } = useAuth();
+  const notifCount = useNotificationCount();
 
   return (
     <Sidebar collapsible="icon" className="border-r-0">
@@ -67,11 +69,16 @@ export function AppSidebar() {
                     <NavLink
                       to="/admin"
                       end
-                      className="hover:bg-sidebar-accent/50 rounded-xl transition-colors"
+                      className="hover:bg-sidebar-accent/50 rounded-xl transition-colors relative"
                       activeClassName="bg-sidebar-accent text-sidebar-primary font-medium"
                     >
                       <ShieldCheck className="mr-2 h-4 w-4" />
                       {!collapsed && <span>Admin</span>}
+                      {notifCount > 0 && (
+                        <span className="absolute right-2 top-1/2 -translate-y-1/2 min-w-[18px] h-[18px] rounded-full bg-destructive text-destructive-foreground text-[10px] font-bold flex items-center justify-center px-1">
+                          {notifCount}
+                        </span>
+                      )}
                     </NavLink>
                   </SidebarMenuButton>
                 </SidebarMenuItem>

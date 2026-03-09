@@ -287,6 +287,25 @@ export const PHASES: Phase[] = [
             ],
           },
           {
+            id: "belief-emotion-map",
+            title: "Belief Emotion Map",
+            description: "For each belief you identified, map the emotion connected to it, where you feel it in your body, and where it originated.",
+            fields: [
+              {
+                id: "emotion-map-entries",
+                label: "Map your beliefs to their emotions, body sensations, and origins",
+                type: "repeating",
+                columns: [
+                  { id: "belief", label: "Belief", type: "text", placeholder: "e.g., 'We can't afford it'" },
+                  { id: "emotion", label: "Emotion", type: "text", placeholder: "e.g., Fear" },
+                  { id: "body-sensation", label: "Where You Feel It in Your Body", type: "text", placeholder: "e.g., Tight chest" },
+                  { id: "origin", label: "Origin (Person/Event)", type: "text", placeholder: "e.g., Dad" },
+                ],
+              },
+              { id: "emotion-reflection", label: "What patterns do you notice between your beliefs and emotions? Are certain emotions repeated?", type: "textarea" },
+            ],
+          },
+          {
             id: "new-narratives",
             title: "Create New Narratives",
             fields: [

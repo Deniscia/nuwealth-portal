@@ -309,7 +309,7 @@ export const PHASES: Phase[] = [
             id: "belief-audit",
             title: "Belief Audit",
             fields: [
-              { id: "top-beliefs", label: "What are your top 5 beliefs about money that hold you back?", type: "textarea" },
+              { id: "top-beliefs", label: "What situations trigger your limiting money beliefs?", type: "textarea" },
               { id: "belief-strength", label: "How strongly do you hold these beliefs? (1 = loosely, 10 = deeply embedded)", type: "slider" },
               { id: "evidence-against", label: "What evidence exists that contradicts these beliefs?", type: "textarea" },
             ],

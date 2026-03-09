@@ -37,10 +37,45 @@ export const PHASES: Phase[] = [
     description: "Understanding your money story",
     workbooks: [
       {
+        id: "p1-money-trauma",
+        title: "Money Trauma 101",
+        phaseNumber: 1,
+        order: 1,
+        sections: [
+          {
+            id: "defining-money-trauma",
+            title: "Defining Money Trauma",
+            description: "Before we can heal, we need to name it. Money trauma isn't just about losing money — it's about the emotional wounds tied to financial experiences.",
+            fields: [
+              { id: "define-trauma", label: "In your own words, what does 'money trauma' mean to you?", type: "textarea", placeholder: "There's no right or wrong answer — just your truth..." },
+            ],
+          },
+          {
+            id: "ripple-effect",
+            title: "The Ripple Effect",
+            description: "Think about moments in your life where money caused stress, pain, or conflict. For each event, reflect on how it affected you emotionally and behaviorally.",
+            fields: [
+              {
+                id: "ripple-events",
+                label: "Map your money events (e.g., Job loss / Fear / Shut down emotionally / Reassurance and a plan)",
+                type: "repeating",
+                columns: [
+                  { id: "event", label: "Event", type: "text", placeholder: "e.g., Job loss, parents arguing about bills..." },
+                  { id: "emotion", label: "Emotion You Felt", type: "text", placeholder: "e.g., Fear, shame, anger..." },
+                  { id: "reaction", label: "How You Reacted", type: "text", placeholder: "e.g., Shut down emotionally, overspent..." },
+                  { id: "needed", label: "What You Needed Instead", type: "text", placeholder: "e.g., Reassurance and a plan..." },
+                ],
+              },
+              { id: "ripple-reflection", label: "When I think about my relationship with money, I notice that...", type: "textarea", placeholder: "Complete this sentence with whatever comes to mind..." },
+            ],
+          },
+        ],
+      },
+      {
         id: "p1-money-story",
         title: "Money Story Worksheet",
         phaseNumber: 1,
-        order: 1,
+        order: 2,
         sections: [
           {
             id: "earliest-memory",
@@ -81,7 +116,7 @@ export const PHASES: Phase[] = [
         id: "p1-mindset-journal",
         title: "Money Mindset Journal Prompts",
         phaseNumber: 1,
-        order: 2,
+        order: 3,
         sections: [
           {
             id: "day1-prompt",

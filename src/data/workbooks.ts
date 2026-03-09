@@ -116,7 +116,7 @@ export const PHASES: Phase[] = [
         id: "p1-mindset-journal",
         title: "Money Mindset Journal Prompts",
         phaseNumber: 1,
-        order: 2,
+        order: 3,
         sections: [
           {
             id: "day1-prompt",

@@ -302,7 +302,7 @@ export const PHASES: Phase[] = [
                   { id: "origin", label: "Origin (Person/Event)", type: "text", placeholder: "e.g., Dad" },
                 ],
               },
-              { id: "emotion-reflection", label: "What patterns do you notice between your beliefs and emotions? Are certain emotions repeated?", type: "textarea" },
+              { id: "emotion-reflection", label: "When you read your beliefs out loud, how does your body respond? What beliefs feel \"heavy\"? Which feel \"sticky\"? Which feel outdated?", type: "textarea" },
             ],
           },
           {

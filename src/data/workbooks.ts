@@ -6,6 +6,8 @@ export interface WorkbookField {
   columns?: WorkbookField[];
   placeholder?: string;
   description?: string;
+  min?: number;
+  max?: number;
 }
 
 export interface WorkbookSection {

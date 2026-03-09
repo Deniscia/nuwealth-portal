@@ -1,6 +1,7 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState, useCallback, useRef } from "react";
-import { ArrowLeft, Check, Loader2, Save } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, Loader2, Save } from "lucide-react";
+import { Progress } from "@/components/ui/progress";
 import { getWorkbook, getPhase, getRecommendedWorkbook } from "@/data/workbooks";
 import { useWorkbookData } from "@/hooks/useWorkbookData";
 import { useAuth } from "@/hooks/useAuth";

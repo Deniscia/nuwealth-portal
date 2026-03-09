@@ -202,7 +202,7 @@ export const PHASES: Phase[] = [
         id: "p2-scarcity-abundance",
         title: "Scarcity to Abundance Shifting Guide",
         phaseNumber: 2,
-        order: 3,
+        order: 4,
         sections: [
           {
             id: "scarcity-map",

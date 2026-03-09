@@ -1,6 +1,7 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState, useCallback, useRef } from "react";
-import { ArrowLeft, Check, Loader2, Save } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, Loader2, Save } from "lucide-react";
+import { Progress } from "@/components/ui/progress";
 import { getWorkbook, getPhase, getRecommendedWorkbook } from "@/data/workbooks";
 import { useWorkbookData } from "@/hooks/useWorkbookData";
 import { useAuth } from "@/hooks/useAuth";
@@ -30,12 +31,17 @@ const WorkbookPage = () => {
   const [isCompleted, setIsCompleted] = useState(false);
   const [showOutOfOrderWarning, setShowOutOfOrderWarning] = useState(false);
   const [recommendedWorkbook, setRecommendedWorkbook] = useState<string | null>(null);
+  const [currentStep, setCurrentStep] = useState(0);
+  const [animKey, setAnimKey] = useState(0);
 
   // Chat panel state
   const [chatOpen, setChatOpen] = useState(false);
   const [chatQuestion, setChatQuestion] = useState("");
 
   const saveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const totalSteps = workbook?.sections.length || 0;
+  const currentSection = workbook?.sections[currentStep];
 
   const handleFieldChange = useCallback(
     (fieldId: string, value: any) => {
@@ -50,6 +56,13 @@ const WorkbookPage = () => {
     setChatQuestion(questionText);
     setChatOpen(true);
   }, []);
+
+  const goToStep = useCallback((step: number) => {
+    save();
+    setCurrentStep(step);
+    setAnimKey((k) => k + 1);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, [save]);
 
   useEffect(() => {
     if (!user || !workbook) return;
@@ -105,6 +118,10 @@ const WorkbookPage = () => {
     return date.toLocaleTimeString();
   };
 
+  const progressPercent = totalSteps > 0 ? ((currentStep + 1) / totalSteps) * 100 : 0;
+  const isLastStep = currentStep === totalSteps - 1;
+  const isFirstStep = currentStep === 0;
+
   return (
     <>
       <div className="max-w-3xl mx-auto space-y-6 animate-fade-in pb-24">
@@ -134,6 +151,19 @@ const WorkbookPage = () => {
           </div>
         </div>
 
+        {/* Progress indicator */}
+        {totalSteps > 1 && (
+          <div className="space-y-2">
+            <div className="flex items-center justify-between text-sm font-body">
+              <span className="text-muted-foreground">
+                Step {currentStep + 1} of {totalSteps}
+              </span>
+              <span className="text-muted-foreground">{Math.round(progressPercent)}%</span>
+            </div>
+            <Progress value={progressPercent} className="h-2" />
+          </div>
+        )}
+
         {showOutOfOrderWarning && (
           <div className="bg-primary/10 border border-primary/30 rounded-xl p-4 flex items-start gap-3">
             <span className="text-primary text-lg">⚡</span>
@@ -162,18 +192,18 @@ const WorkbookPage = () => {
           <div className="flex justify-center py-12">
             <Loader2 className="h-8 w-8 animate-spin text-primary" />
           </div>
-        ) : (
+        ) : currentSection ? (
           <>
-            {workbook.sections.map((section) => (
-              <div key={section.id} className="bg-card rounded-2xl border border-border shadow-card p-6 space-y-6">
+            <div key={animKey} className="animate-fade-in">
+              <div className="bg-card rounded-2xl border border-border shadow-card p-6 space-y-6">
                 <div>
-                  <h2 className="text-xl font-display font-bold text-foreground">{section.title}</h2>
-                  {section.description && (
-                    <p className="mt-1 text-sm text-muted-foreground font-body">{section.description}</p>
+                  <h2 className="text-xl font-display font-bold text-foreground">{currentSection.title}</h2>
+                  {currentSection.description && (
+                    <p className="mt-1 text-sm text-muted-foreground font-body">{currentSection.description}</p>
                   )}
                 </div>
                 <div className="space-y-6">
-                  {section.fields.map((field) => (
+                  {currentSection.fields.map((field) => (
                     <WorkbookFieldRenderer
                       key={field.id}
                       field={field}
@@ -184,33 +214,48 @@ const WorkbookPage = () => {
                   ))}
                 </div>
               </div>
-            ))}
+            </div>
 
-            {!isCompleted && (
-              <div className="flex justify-center pt-4">
-                <AlertDialog>
-                  <AlertDialogTrigger asChild>
-                    <Button variant="gold" size="lg" className="gap-2">
-                      <Check className="h-5 w-5" /> Mark as Complete
-                    </Button>
-                  </AlertDialogTrigger>
-                  <AlertDialogContent>
-                    <AlertDialogHeader>
-                      <AlertDialogTitle className="font-display">Complete this workbook?</AlertDialogTitle>
-                      <AlertDialogDescription className="font-body">
-                        Your responses will be saved and this workbook will be marked as complete. You can still edit your responses later.
-                      </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                      <AlertDialogCancel>Cancel</AlertDialogCancel>
-                      <AlertDialogAction onClick={handleMarkComplete}>Yes, mark as complete</AlertDialogAction>
-                    </AlertDialogFooter>
-                  </AlertDialogContent>
-                </AlertDialog>
-              </div>
-            )}
+            {/* Navigation buttons */}
+            <div className="flex items-center justify-between pt-2">
+              {!isFirstStep ? (
+                <Button variant="outline" onClick={() => goToStep(currentStep - 1)} className="gap-2">
+                  <ArrowLeft className="h-4 w-4" /> Previous
+                </Button>
+              ) : (
+                <div />
+              )}
+
+              {isLastStep ? (
+                !isCompleted ? (
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <Button variant="gold" size="lg" className="gap-2">
+                        <Check className="h-5 w-5" /> Mark as Complete
+                      </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle className="font-display">Complete this workbook?</AlertDialogTitle>
+                        <AlertDialogDescription className="font-body">
+                          Your responses will be saved and this workbook will be marked as complete. You can still edit your responses later.
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogAction onClick={handleMarkComplete}>Yes, mark as complete</AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
+                ) : null
+              ) : (
+                <Button variant="gold" onClick={() => goToStep(currentStep + 1)} className="gap-2">
+                  Next <ArrowRight className="h-4 w-4" />
+                </Button>
+              )}
+            </div>
           </>
-        )}
+        ) : null}
       </div>
 
       {/* Coach Chat Panel */}

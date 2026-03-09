@@ -176,7 +176,7 @@ export const PHASES: Phase[] = [
         id: "p2-self-talk",
         title: "Financial Self-Talk Script Library",
         phaseNumber: 2,
-        order: 2,
+        order: 3,
         sections: [
           {
             id: "current-self-talk",

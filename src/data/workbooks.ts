@@ -345,7 +345,33 @@ export const PHASES: Phase[] = [
               { id: "morning-affirmation", label: "Write a morning money affirmation.", type: "textarea", placeholder: "e.g., 'I am a wise steward of my finances...'" },
               { id: "spending-script", label: "Write a script for when you feel guilt about spending.", type: "textarea" },
               { id: "earning-script", label: "Write a script for when you feel unworthy of earning more.", type: "textarea" },
-              { id: "saving-script", label: "Write a script for when saving feels impossible.", type: "textarea" },
+            { id: "saving-script", label: "Write a script for when saving feels impossible.", type: "textarea" },
+            ],
+          },
+          {
+            id: "toxic-positivity",
+            title: "Spot the Toxic Positivity",
+            description: "Select the statements that feel unrealistic for your nervous system. Then reflect on how they actually make you feel — encouraged, or pressured and dismissed?",
+            fields: [
+              { id: "toxic-statements", label: "Which of these statements feel unrealistic or unsafe for your nervous system?", type: "checkbox", options: [
+                "\"Money comes easily and effortlessly.\"",
+                "\"Just be positive and money will appear.\"",
+                "\"Act rich to become rich.\"",
+                "\"You're broke because of your mindset.\""
+              ]},
+              { id: "toxic-feeling", label: "How do these statements actually make you feel? Encouraged — or pressured and dismissed?", type: "textarea", placeholder: "Be honest about what comes up for you..." },
+            ],
+          },
+          {
+            id: "safe-affirmations",
+            title: "Reframe: Nervous System Safe Affirmations",
+            description: "Complete each gentle affirmation in your own words. There's no wrong answer — just what feels true and safe for you right now.",
+            fields: [
+              { id: "safe-to", label: "\"Right now, it's safe for me to...\"", type: "text", placeholder: "Complete this affirmation" },
+              { id: "learning-to-trust", label: "\"I'm learning to trust myself with...\"", type: "text", placeholder: "Complete this affirmation" },
+              { id: "no-rush", label: "\"I don't have to rush. I get to...\"", type: "text", placeholder: "Complete this affirmation" },
+              { id: "less-scary", label: "\"Money is becoming less scary because...\"", type: "text", placeholder: "Complete this affirmation" },
+              { id: "worth-not-defined", label: "\"My worth is not defined by...\"", type: "text", placeholder: "Complete this affirmation" },
             ],
           },
         ],

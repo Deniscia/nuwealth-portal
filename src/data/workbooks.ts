@@ -273,10 +273,117 @@ export const PHASES: Phase[] = [
     workbooks: [
       {
         id: "p1-mindset-reset",
-        title: "Money Mindset Reset Guide",
+        title: "Money Belief Origins",
         phaseNumber: 2,
         order: 1,
-        sections: [],
+        sections: [
+          {
+            title: "Exercise 1: Family Money Tree 🌳",
+            description: "Use this template to map the emotional and belief patterns inherited from each generation.",
+            fields: [
+              {
+                id: "fmt-parents",
+                label: "Parents",
+                type: "repeating" as const,
+                columns: [
+                  { id: "beliefs", label: "Their beliefs about money", type: "textarea" as const },
+                  { id: "spending-style", label: "Their spending style", type: "textarea" as const },
+                  { id: "emotional-tone", label: "Their emotional tone around money", type: "textarea" as const },
+                  { id: "stress-response", label: "How they responded during money stress", type: "textarea" as const },
+                ],
+              },
+              {
+                id: "fmt-grandparents",
+                label: "Grandparents",
+                type: "repeating" as const,
+                columns: [
+                  { id: "beliefs", label: "Their beliefs about money", type: "textarea" as const },
+                  { id: "spending-style", label: "Their spending style", type: "textarea" as const },
+                  { id: "emotional-tone", label: "Their emotional tone around money", type: "textarea" as const },
+                  { id: "stress-response", label: "How they responded during money stress", type: "textarea" as const },
+                ],
+              },
+              {
+                id: "fmt-extended",
+                label: "Extended Family / Community",
+                type: "repeating" as const,
+                columns: [
+                  { id: "beliefs", label: "Their beliefs about money", type: "textarea" as const },
+                  { id: "spending-style", label: "Their spending style", type: "textarea" as const },
+                  { id: "emotional-tone", label: "Their emotional tone around money", type: "textarea" as const },
+                  { id: "stress-response", label: "How they responded during money stress", type: "textarea" as const },
+                ],
+              },
+              {
+                id: "fmt-patterns-see",
+                label: "Which of these patterns do you see in yourself?",
+                type: "textarea" as const,
+              },
+              {
+                id: "fmt-patterns-influencing",
+                label: "Which patterns feel like they're still influencing your decisions today?",
+                type: "textarea" as const,
+              },
+              {
+                id: "fmt-patterns-break",
+                label: "Which patterns do you want to break?",
+                type: "textarea" as const,
+              },
+              {
+                id: "fmt-patterns-transform",
+                label: "Which patterns do you want to transform — not reject?",
+                type: "textarea" as const,
+              },
+              {
+                id: "fmt-release-statement",
+                label: "Release Statement",
+                description: "Choose one generational pattern you are consciously ending. Complete the statement:\n\n\"I am the one who ends the pattern of _____________.\nI release the belief that __________________.\nI choose ____________________ moving forward.\"",
+                type: "textarea" as const,
+                placeholder: "I am the one who ends the pattern of...\nI release the belief that...\nI choose... moving forward.",
+              },
+            ],
+          },
+          {
+            title: "Exercise 2: Inner Child Money Work",
+            description: "Reconnect with your younger self to heal old money wounds and create new safety.",
+            fields: [
+              {
+                id: "icmw-letter",
+                label: "Letter to Your Younger Self",
+                description: "Use these guided prompts to write your letter:\n\n• \"Dear younger me...\"\n• \"I remember that moment when money felt scary because...\"\n• \"You didn't deserve to feel...\"\n• \"I understand why you tried to protect yourself by...\"\n• \"I want you to know you are safe now because...\"\n• \"You don't have to carry this anymore.\"",
+                type: "textarea" as const,
+                placeholder: "Dear younger me...",
+              },
+              {
+                id: "icmw-need-stress",
+                label: "When money felt stressful, I needed:",
+                type: "textarea" as const,
+              },
+              {
+                id: "icmw-need-argued",
+                label: "When adults argued about money, I needed:",
+                type: "textarea" as const,
+              },
+              {
+                id: "icmw-need-not-enough",
+                label: "When we didn't have enough, I needed:",
+                type: "textarea" as const,
+              },
+              {
+                id: "icmw-need-mistake",
+                label: "When I made a \"mistake\" with money, I needed:",
+                type: "textarea" as const,
+              },
+              {
+                id: "icmw-safety-sentence",
+                label: "Safety Sentence",
+                description: "Write one sentence that your younger self needed most.",
+                type: "textarea" as const,
+                placeholder: "Little me needed to hear: ...",
+              },
+            ],
+          },
+        ],
       },
       {
         id: "p2-limiting-beliefs",

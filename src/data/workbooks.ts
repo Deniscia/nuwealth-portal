@@ -324,14 +324,6 @@ export const PHASES: Phase[] = [
               { id: "daily-practice", label: "Describe a daily practice you'll commit to for reinforcing these new beliefs.", type: "textarea" },
             ],
           },
-        ],
-      },
-      {
-        id: "p2-limiting-beliefs",
-        title: "Limiting Beliefs Reframing Guide",
-        phaseNumber: 2,
-        order: 2,
-        sections: [
           {
             id: "reframe-practice",
             title: "Reframing Practice",
@@ -342,6 +334,13 @@ export const PHASES: Phase[] = [
             ],
           },
         ],
+      },
+      {
+        id: "p2-limiting-beliefs",
+        title: "Limiting Beliefs Reframing Guide",
+        phaseNumber: 2,
+        order: 2,
+        sections: [],
       },
       {
         id: "p2-self-talk",

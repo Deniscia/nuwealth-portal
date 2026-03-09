@@ -278,6 +278,7 @@ export const PHASES: Phase[] = [
         order: 1,
         sections: [
           {
+            id: "family-money-tree",
             title: "Exercise 1: Family Money Tree 🌳",
             description: "Use this template to map the emotional and belief patterns inherited from each generation.",
             fields: [

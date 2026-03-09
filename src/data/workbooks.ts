@@ -112,11 +112,18 @@ export const PHASES: Phase[] = [
           },
         ],
       },
+    ],
+  },
+  {
+    number: 2,
+    title: "Healing & Reframing",
+    description: "Releasing old patterns and embracing new possibilities",
+    workbooks: [
       {
         id: "p1-mindset-reset",
         title: "Money Mindset Reset Guide",
-        phaseNumber: 1,
-        order: 3,
+        phaseNumber: 2,
+        order: 1,
         sections: [
           {
             id: "limiting-beliefs",
@@ -139,18 +146,11 @@ export const PHASES: Phase[] = [
           },
         ],
       },
-    ],
-  },
-  {
-    number: 2,
-    title: "Healing & Reframing",
-    description: "Releasing old patterns and embracing new possibilities",
-    workbooks: [
       {
         id: "p2-limiting-beliefs",
         title: "Limiting Beliefs Reframing Guide",
         phaseNumber: 2,
-        order: 1,
+        order: 2,
         sections: [
           {
             id: "belief-audit",
@@ -176,7 +176,7 @@ export const PHASES: Phase[] = [
         id: "p2-self-talk",
         title: "Financial Self-Talk Script Library",
         phaseNumber: 2,
-        order: 2,
+        order: 3,
         sections: [
           {
             id: "current-self-talk",
@@ -202,7 +202,7 @@ export const PHASES: Phase[] = [
         id: "p2-scarcity-abundance",
         title: "Scarcity to Abundance Shifting Guide",
         phaseNumber: 2,
-        order: 3,
+        order: 4,
         sections: [
           {
             id: "scarcity-map",

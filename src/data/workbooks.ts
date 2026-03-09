@@ -276,6 +276,13 @@ export const PHASES: Phase[] = [
         title: "Money Mindset Reset Guide",
         phaseNumber: 2,
         order: 1,
+        sections: [],
+      },
+      {
+        id: "p2-limiting-beliefs",
+        title: "Limiting Beliefs Reframing Guide",
+        phaseNumber: 2,
+        order: 2,
         sections: [
           {
             id: "limiting-beliefs",
@@ -322,18 +329,10 @@ export const PHASES: Phase[] = [
               { id: "reframe-2", label: "Old belief → New empowering belief #2", type: "text" },
               { id: "reframe-3", label: "Old belief → New empowering belief #3", type: "text" },
               { id: "daily-practice", label: "Describe a daily practice you'll commit to for reinforcing these new beliefs.", type: "textarea" },
-              
               { id: "support-needed", label: "What support do you need to maintain these new beliefs?", type: "checkbox", options: ["Accountability partner", "Journaling practice", "Therapy/coaching", "Community support", "Meditation", "Affirmations"] },
             ],
           },
         ],
-      },
-      {
-        id: "p2-limiting-beliefs",
-        title: "Limiting Beliefs Reframing Guide",
-        phaseNumber: 2,
-        order: 2,
-        sections: [],
       },
       {
         id: "p2-self-talk",

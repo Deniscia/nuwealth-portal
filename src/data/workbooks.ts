@@ -187,6 +187,83 @@ export const PHASES: Phase[] = [
           },
         ],
       },
+      {
+        id: "p1-regulating-stress",
+        title: "Regulating Financial Stress",
+        phaseNumber: 1,
+        order: 5,
+        sections: [
+          {
+            id: "body-awareness",
+            title: "Body Awareness Mapping",
+            description: "This is a guided exercise. Close your eyes and think about checking your bank account or paying a bill. Notice where you feel it in your body — your chest, throat, stomach, shoulders? Sit with the sensation for a moment without judgment.\n\n📌 Imagine an outline of your body. Where do the emotions live? Label them below.",
+            fields: [
+              { id: "body-sensations", label: "Where do you feel financial stress in your body? Describe the sensations and where they show up.", type: "textarea", placeholder: "e.g., 'Tight chest when I think about bills, sinking stomach when checking my account, tension in my shoulders when talking about money...'" },
+            ],
+          },
+          {
+            id: "regulation-tools",
+            title: "Financial Regulation Tools",
+            description: "Try each grounding technique this week and note which ones help you feel calmer when dealing with money. Check off what you've tried and whether it helped.",
+            fields: [
+              { id: "reg-box-breathing", label: "Box Breathing (In 4, Hold 2, Out 6)", type: "checkbox", options: ["Tried it", "Found it calming"] },
+              { id: "reg-box-breathing-notes", label: "Notes on Box Breathing", type: "text", placeholder: "How did this feel? When did you try it?" },
+              { id: "reg-eft-tapping", label: "EFT Tapping (Collarbone)", type: "checkbox", options: ["Tried it", "Found it calming"] },
+              { id: "reg-eft-tapping-notes", label: "Notes on EFT Tapping", type: "text", placeholder: "How did this feel? When did you try it?" },
+              { id: "reg-mindful-checkin", label: "Mindful Money Check-in", type: "checkbox", options: ["Tried it", "Found it calming"] },
+              { id: "reg-mindful-checkin-notes", label: "Notes on Mindful Money Check-in", type: "text", placeholder: "How did this feel? When did you try it?" },
+              { id: "reg-positive-self-talk", label: "Positive Self-Talk Before Bill Paying", type: "checkbox", options: ["Tried it", "Found it calming"] },
+              { id: "reg-positive-self-talk-notes", label: "Notes on Positive Self-Talk", type: "text", placeholder: "How did this feel? When did you try it?" },
+            ],
+          },
+          {
+            id: "money-ritual",
+            title: "Money Ritual Design",
+            description: "Build a calm relationship with money by designing a personal ritual that helps you self-soothe and self-regulate while managing your finances. Use the examples as inspiration.",
+            fields: [
+              {
+                id: "ritual-entries",
+                label: "Design Your Money Rituals",
+                type: "repeating",
+                columns: [
+                  { id: "ritual-step", label: "Ritual Step", type: "text", placeholder: "e.g., Light a candle before checking accounts" },
+                  { id: "ritual-frequency", label: "Frequency", type: "text", placeholder: "e.g., Weekly" },
+                  { id: "ritual-environment", label: "Environment", type: "text", placeholder: "e.g., Quiet space, favorite chair" },
+                  { id: "ritual-feeling", label: "How It Makes Me Feel", type: "text", placeholder: "e.g., Calm, focused, grounded" },
+                ],
+              },
+            ],
+          },
+          {
+            id: "weekly-checkin",
+            title: "The Weekly Money Check-In",
+            description: "Use this checklist each week as a gentle practice. It's not about perfection — it's about building a safe, consistent relationship with your finances.",
+            fields: [
+              {
+                id: "weekly-checklist",
+                label: "This week, I...",
+                type: "checkbox",
+                options: [
+                  "I reviewed my income and expenses calmly",
+                  "I noticed any triggers without judgment",
+                  "I celebrated one small win",
+                  "I practiced gratitude for one financial blessing",
+                  "I affirmed: 'I am building a safe relationship with money.'",
+                ],
+              },
+            ],
+          },
+          {
+            id: "moving-forward",
+            title: "Moving Forward",
+            description: "\"From this point forward, I choose to build wealth from a place of peace, not panic. I release shame, I honor my story, and I step into financial freedom with courage.\"",
+            fields: [
+              { id: "commitment-signature", label: "Sign your name here as a commitment to yourself", type: "text", placeholder: "Your full name" },
+              { id: "final-thoughts", label: "Any final thoughts, feelings, or intentions as you close this chapter?", type: "textarea", placeholder: "Take your time. This space is yours." },
+            ],
+          },
+        ],
+      },
     ],
   },
   {

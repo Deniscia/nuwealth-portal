@@ -205,29 +205,33 @@ export function WorkbookFieldRenderer({ field, value, onChange, onOpenChat }: Pr
         </div>
       );
 
-    case "slider":
+    case "slider": {
+      const sliderMin = field.min ?? 1;
+      const sliderMax = field.max ?? 10;
+      const defaultVal = Math.ceil((sliderMin + sliderMax) / 2);
       return (
         <div className="space-y-3">
           <Label className="font-body text-foreground font-medium">{field.label}</Label>
           <div className="flex items-center gap-4">
-            <span className="text-sm text-muted-foreground font-body w-4">1</span>
+            <span className="text-sm text-muted-foreground font-body w-4">{sliderMin}</span>
             <Slider
-              min={1}
-              max={10}
+              min={sliderMin}
+              max={sliderMax}
               step={1}
-              value={[value || 5]}
+              value={[value || defaultVal]}
               onValueChange={([v]) => onChange(v)}
               className="flex-1"
             />
-            <span className="text-sm text-muted-foreground font-body w-6">10</span>
+            <span className="text-sm text-muted-foreground font-body w-6">{sliderMax}</span>
           </div>
           <div className="text-center">
             <span className="inline-block bg-primary/10 text-primary font-display font-bold text-lg px-4 py-1 rounded-xl">
-              {value || 5}
+              {value || defaultVal}
             </span>
           </div>
         </div>
       );
+    }
 
     case "repeating":
       return <RepeatingField field={field} value={value} onChange={onChange} />;

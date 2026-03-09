@@ -115,10 +115,48 @@ export const PHASES: Phase[] = [
         ],
       },
       {
+        id: "p1-money-wounds-quiz",
+        title: "Your Money Wounds — Self Quiz",
+        phaseNumber: 1,
+        order: 3,
+        sections: [
+          {
+            id: "rate-statements",
+            title: "Rate Each Statement",
+            description: "For each statement, rate how true it feels to you (1 = not at all, 5 = very true).",
+            fields: [
+              { id: "quiz-avoid-bank", label: "I avoid checking my bank account.", type: "slider", min: 1, max: 5 },
+              { id: "quiz-guilty-spending", label: "I feel guilty when I spend on myself.", type: "slider", min: 1, max: 5 },
+              { id: "quiz-give-loan", label: "I give or loan money to others even when I can't afford it.", type: "slider", min: 1, max: 5 },
+              { id: "quiz-impulsive-spend", label: "I spend impulsively to feel better emotionally.", type: "slider", min: 1, max: 5 },
+              { id: "quiz-large-cushion", label: "I feel unsafe unless I have a large cushion of savings.", type: "slider", min: 1, max: 5 },
+              { id: "quiz-resist-budget", label: "I resist budgeting or structure because it feels restrictive.", type: "slider", min: 1, max: 5 },
+            ],
+          },
+          {
+            id: "scoring-guide",
+            title: "Scoring Guide",
+            description: "Review your scores and identify your pattern:\n\n● Mostly 1–2 → Money Avoider — You tend to disengage from your finances as a way to cope.\n● Mostly 3s → Overgiver or Saver-Hoarder — You may over-give to others or hoard money out of fear.\n● Mostly 4–5 → Chaser or Rebel — You may chase money for validation or rebel against financial structure.",
+            fields: [
+              { id: "quiz-pattern", label: "Based on your scores, which pattern do you most identify with and why?", type: "textarea", placeholder: "Take your time — there's no wrong answer..." },
+            ],
+          },
+          {
+            id: "reflection",
+            title: "Reflection",
+            description: "Now that you've identified your money wound pattern, take a moment to journal on these two prompts. Give yourself space to be honest — this is just for you.",
+            fields: [
+              { id: "quiz-reflect-protect", label: "What does your money wound type reveal about how you protect yourself emotionally?", type: "textarea", placeholder: "Consider the ways this pattern has served as emotional armor..." },
+              { id: "quiz-reflect-survive", label: "How has this pattern helped you survive — and how might it now be holding you back?", type: "textarea", placeholder: "Acknowledge both the protection it gave you and the cost it carries today..." },
+            ],
+          },
+        ],
+      },
+      {
         id: "p1-mindset-journal",
         title: "Money Mindset Journal Prompts",
         phaseNumber: 1,
-        order: 3,
+        order: 4,
         sections: [
           {
             id: "day1-prompt",

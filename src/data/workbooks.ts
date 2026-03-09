@@ -112,11 +112,18 @@ export const PHASES: Phase[] = [
           },
         ],
       },
+    ],
+  },
+  {
+    number: 2,
+    title: "Healing & Reframing",
+    description: "Releasing old patterns and embracing new possibilities",
+    workbooks: [
       {
         id: "p1-mindset-reset",
         title: "Money Mindset Reset Guide",
-        phaseNumber: 1,
-        order: 3,
+        phaseNumber: 2,
+        order: 1,
         sections: [
           {
             id: "limiting-beliefs",
@@ -139,18 +146,11 @@ export const PHASES: Phase[] = [
           },
         ],
       },
-    ],
-  },
-  {
-    number: 2,
-    title: "Healing & Reframing",
-    description: "Releasing old patterns and embracing new possibilities",
-    workbooks: [
       {
         id: "p2-limiting-beliefs",
         title: "Limiting Beliefs Reframing Guide",
         phaseNumber: 2,
-        order: 1,
+        order: 2,
         sections: [
           {
             id: "belief-audit",

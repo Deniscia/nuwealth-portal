@@ -338,7 +338,7 @@ export const PHASES: Phase[] = [
               {
                 id: "fmt-release-statement",
                 label: "Release Statement",
-                description: "Choose one generational pattern you are consciously ending. Complete the statement:\n\n\"I am the one who ends the pattern of _____________.\nI release the belief that __________________.\nI choose ____________________ moving forward.\"",
+                description: "Choose one generational pattern you are consciously ending. Complete the statements:\n\n\"I am the one who ends the pattern of _____________.\nI release the belief that __________________.\nI choose ____________________ moving forward.\"",
                 type: "textarea" as const,
                 placeholder: "I am the one who ends the pattern of...\nI release the belief that...\nI choose... moving forward.",
               },

@@ -309,7 +309,7 @@ export const PHASES: Phase[] = [
             id: "belief-audit",
             title: "Belief Audit",
             fields: [
-              { id: "top-beliefs", label: "What are your top 5 beliefs about money that hold you back?", type: "textarea" },
+              { id: "top-beliefs", label: "What situations trigger your limiting money beliefs?", type: "textarea" },
               { id: "belief-strength", label: "How strongly do you hold these beliefs? (1 = loosely, 10 = deeply embedded)", type: "slider" },
               { id: "evidence-against", label: "What evidence exists that contradicts these beliefs?", type: "textarea" },
             ],
@@ -322,13 +322,6 @@ export const PHASES: Phase[] = [
               { id: "reframe-2", label: "Old belief → New empowering belief #2", type: "text" },
               { id: "reframe-3", label: "Old belief → New empowering belief #3", type: "text" },
               { id: "daily-practice", label: "Describe a daily practice you'll commit to for reinforcing these new beliefs.", type: "textarea" },
-            ],
-          },
-          {
-            id: "reframe-practice",
-            title: "Reframing Practice",
-            fields: [
-              { id: "trigger-situations", label: "What situations trigger your limiting money beliefs?", type: "textarea" },
               { id: "new-response", label: "Write a new empowered response for each trigger.", type: "textarea" },
               { id: "support-needed", label: "What support do you need to maintain these new beliefs?", type: "checkbox", options: ["Accountability partner", "Journaling practice", "Therapy/coaching", "Community support", "Meditation", "Affirmations"] },
             ],

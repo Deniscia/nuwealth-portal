@@ -345,6 +345,7 @@ export const PHASES: Phase[] = [
             ],
           },
           {
+            id: "inner-child-money-work",
             title: "Exercise 2: Inner Child Money Work",
             description: "Reconnect with your younger self to heal old money wounds and create new safety.",
             fields: [

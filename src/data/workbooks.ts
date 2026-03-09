@@ -339,16 +339,6 @@ export const PHASES: Phase[] = [
             ],
           },
           {
-            id: "new-scripts",
-            title: "Your New Money Scripts",
-            fields: [
-              { id: "morning-affirmation", label: "Write a morning money affirmation.", type: "textarea", placeholder: "e.g., 'I am a wise steward of my finances...'" },
-              { id: "spending-script", label: "Write a script for when you feel guilt about spending.", type: "textarea" },
-              { id: "earning-script", label: "Write a script for when you feel unworthy of earning more.", type: "textarea" },
-            { id: "saving-script", label: "Write a script for when saving feels impossible.", type: "textarea" },
-            ],
-          },
-          {
             id: "toxic-positivity",
             title: "Spot the Toxic Positivity",
             description: "Select the statements that feel unrealistic for your nervous system. Then reflect on how they actually make you feel — encouraged, or pressured and dismissed?",
@@ -372,6 +362,16 @@ export const PHASES: Phase[] = [
               { id: "no-rush", label: "\"I don't have to rush. I get to...\"", type: "text", placeholder: "Complete this affirmation" },
               { id: "less-scary", label: "\"Money is becoming less scary because...\"", type: "text", placeholder: "Complete this affirmation" },
               { id: "worth-not-defined", label: "\"My worth is not defined by...\"", type: "text", placeholder: "Complete this affirmation" },
+            ],
+          },
+          {
+            id: "new-scripts",
+            title: "Your New Money Scripts",
+            fields: [
+              { id: "morning-affirmation", label: "Write a morning money affirmation.", type: "textarea", placeholder: "e.g., 'I am a wise steward of my finances...'" },
+              { id: "spending-script", label: "Write a script for when you feel guilt about spending.", type: "textarea" },
+              { id: "earning-script", label: "Write a script for when you feel unworthy of earning more.", type: "textarea" },
+              { id: "saving-script", label: "Write a script for when saving feels impossible.", type: "textarea" },
             ],
           },
         ],

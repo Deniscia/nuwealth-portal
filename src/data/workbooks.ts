@@ -279,11 +279,11 @@ export const PHASES: Phase[] = [
         sections: [
           {
             id: "limiting-beliefs",
-            title: "Identify Limiting Beliefs",
+            title: "Money Beliefs & Their Origins",
             fields: [
               { id: "beliefs-list", label: "List 3–5 limiting beliefs you hold about money.", type: "textarea", placeholder: "e.g., 'Rich people are greedy', 'I'll never be wealthy'..." },
               { id: "belief-origin", label: "Where did these beliefs originate?", type: "radio", options: ["Family", "Culture", "Media", "Personal experience", "Religion/Spirituality", "Peers"] },
-              { id: "belief-cost", label: "What has holding onto these beliefs cost you?", type: "textarea" },
+              { id: "belief-cost", label: "Which of these beliefs felt true to you as a child?\nWhich still feel true today, even if logically you know they're not?", type: "textarea" },
             ],
           },
           {

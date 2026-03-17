@@ -309,6 +309,33 @@ export function DebtTracker() {
             ))}
           </div>
 
+          {/* Payoff Timeline Chart */}
+          {withExtra.timeline.length > 1 && (
+            <div>
+              <p className="text-xs font-display font-semibold text-muted-foreground uppercase tracking-wider mb-3">Payoff Timeline</p>
+              <ResponsiveContainer width="100%" height={220}>
+                <AreaChart data={withExtra.timeline}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                  <XAxis dataKey="month" tick={{ fontSize: 11 }} stroke="hsl(var(--muted-foreground))" label={{ value: "Month", position: "insideBottom", offset: -2, fontSize: 11 }} />
+                  <YAxis tick={{ fontSize: 11 }} stroke="hsl(var(--muted-foreground))" tickFormatter={v => `$${(v/1000).toFixed(0)}k`} />
+                  <Tooltip formatter={(v: number) => `$${v.toLocaleString()}`} />
+                  <Legend wrapperStyle={{ fontSize: 11 }} />
+                  {sortedDebts.map((d, i) => (
+                    <Area
+                      key={d.creditor}
+                      type="monotone"
+                      dataKey={d.creditor || `Debt ${i + 1}`}
+                      stackId="1"
+                      stroke={DEBT_COLORS[i % DEBT_COLORS.length]}
+                      fill={DEBT_COLORS[i % DEBT_COLORS.length]}
+                      fillOpacity={0.4}
+                    />
+                  ))}
+                </AreaChart>
+              </ResponsiveContainer>
+            </div>
+          )}
+
           {/* Results */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
             <div className="bg-primary/5 rounded-xl p-3 text-center">

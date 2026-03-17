@@ -124,22 +124,6 @@ export function FinancialCalculators() {
   return (
     <div className="space-y-4">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {/* Debt Payoff */}
-        <CalcCard title="💳 Debt Payoff Calculator">
-          <div className="grid grid-cols-2 gap-3">
-            <CurrencyInput label="Balance" value={dpBalance} onChange={setDpBalance} />
-            <NumInput label="Interest Rate" value={dpRate} onChange={setDpRate} suffix="%" />
-            <CurrencyInput label="Min Payment" value={dpMin} onChange={setDpMin} />
-            <CurrencyInput label="Extra Payment" value={dpExtra} onChange={setDpExtra} />
-          </div>
-          {dpMonths > 0 && (
-            <div className="grid grid-cols-2 gap-2">
-              <ResultBox label="Payoff Time" value={`${dpMonths} months`} />
-              <ResultBox label="Interest Saved" value={`$${Math.round(dpInterestSaved).toLocaleString()}`} color="text-green-500" />
-            </div>
-          )}
-        </CalcCard>
-
         {/* Savings Goal */}
         <CalcCard title="🎯 Savings Goal Calculator">
           <div className="grid grid-cols-2 gap-3">

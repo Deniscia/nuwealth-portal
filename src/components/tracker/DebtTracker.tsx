@@ -20,14 +20,31 @@ interface Debt {
   total_paid: number;
 }
 
+interface TimelinePoint {
+  month: number;
+  [creditor: string]: number;
+}
+
 interface PayoffResult {
   months: number;
   totalInterest: number;
   order: { creditor: string; balance: number; interest_rate: number; min_payment: number; paidOffMonth: number }[];
+  timeline: TimelinePoint[];
 }
 
+const DEBT_COLORS = [
+  "hsl(var(--primary))",
+  "hsl(var(--destructive))",
+  "hsl(220, 70%, 55%)",
+  "hsl(280, 60%, 55%)",
+  "hsl(160, 60%, 45%)",
+  "hsl(30, 80%, 55%)",
+  "hsl(340, 65%, 50%)",
+  "hsl(190, 70%, 45%)",
+];
+
 function simulatePayoff(debts: Debt[], extraPayment: number): PayoffResult {
-  if (debts.length === 0) return { months: 0, totalInterest: 0, order: [] };
+  if (debts.length === 0) return { months: 0, totalInterest: 0, order: [], timeline: [] };
 
   const balances = debts.map(d => d.balance);
   const rates = debts.map(d => d.interest_rate / 100 / 12);
@@ -37,9 +54,14 @@ function simulatePayoff(debts: Debt[], extraPayment: number): PayoffResult {
   let months = 0;
   let rolledExtra = extraPayment;
 
+  const timeline: TimelinePoint[] = [];
+  // Record initial state
+  const initialPoint: TimelinePoint = { month: 0 };
+  debts.forEach((d, i) => { initialPoint[d.creditor || `Debt ${i + 1}`] = d.balance; });
+  timeline.push(initialPoint);
+
   while (balances.some(b => b > 0) && months < 600) {
     months++;
-    // Find the first unpaid debt to receive extra
     const targetIdx = balances.findIndex(b => b > 0);
 
     for (let i = 0; i < balances.length; i++) {
@@ -52,9 +74,16 @@ function simulatePayoff(debts: Debt[], extraPayment: number): PayoffResult {
       if (balances[i] <= 0) {
         balances[i] = 0;
         paidOffMonth[i] = months;
-        // Roll this debt's min payment into extra for next target
         rolledExtra += mins[i];
       }
+    }
+
+    // Sample timeline points (cap ~60 data points)
+    const sampleRate = Math.max(1, Math.floor(months > 60 ? months / 60 : 1));
+    if (months % sampleRate === 0 || !balances.some(b => b > 0)) {
+      const point: TimelinePoint = { month: months };
+      debts.forEach((d, i) => { point[d.creditor || `Debt ${i + 1}`] = Math.max(0, Math.round(balances[i])); });
+      timeline.push(point);
     }
   }
 
@@ -68,6 +97,7 @@ function simulatePayoff(debts: Debt[], extraPayment: number): PayoffResult {
       min_payment: d.min_payment,
       paidOffMonth: paidOffMonth[i],
     })),
+    timeline,
   };
 }
 

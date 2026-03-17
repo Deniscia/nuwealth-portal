@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Loader2, Plus, Trash2, PartyPopper } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
+import { BarChart, Bar, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from "recharts";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 
 interface Debt {
@@ -20,14 +20,31 @@ interface Debt {
   total_paid: number;
 }
 
+interface TimelinePoint {
+  month: number;
+  [creditor: string]: number;
+}
+
 interface PayoffResult {
   months: number;
   totalInterest: number;
   order: { creditor: string; balance: number; interest_rate: number; min_payment: number; paidOffMonth: number }[];
+  timeline: TimelinePoint[];
 }
 
+const DEBT_COLORS = [
+  "hsl(var(--primary))",
+  "hsl(var(--destructive))",
+  "hsl(220, 70%, 55%)",
+  "hsl(280, 60%, 55%)",
+  "hsl(160, 60%, 45%)",
+  "hsl(30, 80%, 55%)",
+  "hsl(340, 65%, 50%)",
+  "hsl(190, 70%, 45%)",
+];
+
 function simulatePayoff(debts: Debt[], extraPayment: number): PayoffResult {
-  if (debts.length === 0) return { months: 0, totalInterest: 0, order: [] };
+  if (debts.length === 0) return { months: 0, totalInterest: 0, order: [], timeline: [] };
 
   const balances = debts.map(d => d.balance);
   const rates = debts.map(d => d.interest_rate / 100 / 12);
@@ -37,9 +54,14 @@ function simulatePayoff(debts: Debt[], extraPayment: number): PayoffResult {
   let months = 0;
   let rolledExtra = extraPayment;
 
+  const timeline: TimelinePoint[] = [];
+  // Record initial state
+  const initialPoint: TimelinePoint = { month: 0 };
+  debts.forEach((d, i) => { initialPoint[d.creditor || `Debt ${i + 1}`] = d.balance; });
+  timeline.push(initialPoint);
+
   while (balances.some(b => b > 0) && months < 600) {
     months++;
-    // Find the first unpaid debt to receive extra
     const targetIdx = balances.findIndex(b => b > 0);
 
     for (let i = 0; i < balances.length; i++) {
@@ -52,9 +74,16 @@ function simulatePayoff(debts: Debt[], extraPayment: number): PayoffResult {
       if (balances[i] <= 0) {
         balances[i] = 0;
         paidOffMonth[i] = months;
-        // Roll this debt's min payment into extra for next target
         rolledExtra += mins[i];
       }
+    }
+
+    // Sample timeline points (cap ~60 data points)
+    const sampleRate = Math.max(1, Math.floor(months > 60 ? months / 60 : 1));
+    if (months % sampleRate === 0 || !balances.some(b => b > 0)) {
+      const point: TimelinePoint = { month: months };
+      debts.forEach((d, i) => { point[d.creditor || `Debt ${i + 1}`] = Math.max(0, Math.round(balances[i])); });
+      timeline.push(point);
     }
   }
 
@@ -68,6 +97,7 @@ function simulatePayoff(debts: Debt[], extraPayment: number): PayoffResult {
       min_payment: d.min_payment,
       paidOffMonth: paidOffMonth[i],
     })),
+    timeline,
   };
 }
 
@@ -278,6 +308,33 @@ export function DebtTracker() {
               </div>
             ))}
           </div>
+
+          {/* Payoff Timeline Chart */}
+          {withExtra.timeline.length > 1 && (
+            <div>
+              <p className="text-xs font-display font-semibold text-muted-foreground uppercase tracking-wider mb-3">Payoff Timeline</p>
+              <ResponsiveContainer width="100%" height={220}>
+                <AreaChart data={withExtra.timeline}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                  <XAxis dataKey="month" tick={{ fontSize: 11 }} stroke="hsl(var(--muted-foreground))" label={{ value: "Month", position: "insideBottom", offset: -2, fontSize: 11 }} />
+                  <YAxis tick={{ fontSize: 11 }} stroke="hsl(var(--muted-foreground))" tickFormatter={v => `$${(v/1000).toFixed(0)}k`} />
+                  <Tooltip formatter={(v: number) => `$${v.toLocaleString()}`} />
+                  <Legend wrapperStyle={{ fontSize: 11 }} />
+                  {sortedDebts.map((d, i) => (
+                    <Area
+                      key={d.creditor}
+                      type="monotone"
+                      dataKey={d.creditor || `Debt ${i + 1}`}
+                      stackId="1"
+                      stroke={DEBT_COLORS[i % DEBT_COLORS.length]}
+                      fill={DEBT_COLORS[i % DEBT_COLORS.length]}
+                      fillOpacity={0.4}
+                    />
+                  ))}
+                </AreaChart>
+              </ResponsiveContainer>
+            </div>
+          )}
 
           {/* Results */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-2">

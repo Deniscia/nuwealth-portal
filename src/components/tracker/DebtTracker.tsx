@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { Input } from "@/components/ui/input";
@@ -7,7 +7,8 @@ import { Label } from "@/components/ui/label";
 import { Loader2, Plus, Trash2, PartyPopper } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from "recharts";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 
 interface Debt {
   id?: string;
@@ -19,12 +20,65 @@ interface Debt {
   total_paid: number;
 }
 
+interface PayoffResult {
+  months: number;
+  totalInterest: number;
+  order: { creditor: string; balance: number; interest_rate: number; min_payment: number; paidOffMonth: number }[];
+}
+
+function simulatePayoff(debts: Debt[], extraPayment: number): PayoffResult {
+  if (debts.length === 0) return { months: 0, totalInterest: 0, order: [] };
+
+  const balances = debts.map(d => d.balance);
+  const rates = debts.map(d => d.interest_rate / 100 / 12);
+  const mins = debts.map(d => d.min_payment);
+  const paidOffMonth = debts.map(() => 0);
+  let totalInterest = 0;
+  let months = 0;
+  let rolledExtra = extraPayment;
+
+  while (balances.some(b => b > 0) && months < 600) {
+    months++;
+    // Find the first unpaid debt to receive extra
+    const targetIdx = balances.findIndex(b => b > 0);
+
+    for (let i = 0; i < balances.length; i++) {
+      if (balances[i] <= 0) continue;
+      const interest = balances[i] * rates[i];
+      totalInterest += interest;
+      let payment = mins[i];
+      if (i === targetIdx) payment += rolledExtra;
+      balances[i] = balances[i] + interest - payment;
+      if (balances[i] <= 0) {
+        balances[i] = 0;
+        paidOffMonth[i] = months;
+        // Roll this debt's min payment into extra for next target
+        rolledExtra += mins[i];
+      }
+    }
+  }
+
+  return {
+    months,
+    totalInterest: Math.round(totalInterest),
+    order: debts.map((d, i) => ({
+      creditor: d.creditor,
+      balance: d.balance,
+      interest_rate: d.interest_rate,
+      min_payment: d.min_payment,
+      paidOffMonth: paidOffMonth[i],
+    })),
+  };
+}
+
 export function DebtTracker() {
   const { user } = useAuth();
   const [debts, setDebts] = useState<Debt[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [showConfetti, setShowConfetti] = useState(false);
+  const [payoffMethod, setPayoffMethod] = useState<"snowball" | "avalanche">("snowball");
+  const [extraPayment, setExtraPayment] = useState(0);
 
   useEffect(() => {
     if (!user) return;
@@ -60,31 +114,22 @@ export function DebtTracker() {
 
   const totalDebt = debts.reduce((s, d) => s + d.balance, 0);
   const totalPaid = debts.reduce((s, d) => s + d.total_paid, 0);
-  const totalMinPayment = debts.reduce((s, d) => s + d.min_payment, 0);
 
-  // Snowball sort (smallest balance first)
-  const snowball = [...debts].sort((a, b) => a.balance - b.balance);
-  // Avalanche sort (highest interest first)
-  const avalanche = [...debts].sort((a, b) => b.interest_rate - a.interest_rate);
+  // Sorted debts for calculator
+  const sortedDebts = useMemo(() => {
+    const active = debts.filter(d => d.creditor && d.balance > 0);
+    return payoffMethod === "snowball"
+      ? [...active].sort((a, b) => a.balance - b.balance)
+      : [...active].sort((a, b) => b.interest_rate - a.interest_rate);
+  }, [debts, payoffMethod]);
 
-  // Simple payoff estimate (months)
-  const estimateMonths = (sorted: Debt[]) => {
-    if (totalMinPayment === 0) return 0;
-    let remaining = sorted.map(d => d.balance);
-    let months = 0;
-    while (remaining.some(b => b > 0) && months < 600) {
-      months++;
-      for (let i = 0; i < remaining.length; i++) {
-        if (remaining[i] > 0) {
-          remaining[i] = Math.max(0, remaining[i] * (1 + sorted[i].interest_rate / 100 / 12) - sorted[i].min_payment);
-        }
-      }
-    }
-    return months;
-  };
+  // Simulate with extra payment
+  const withExtra = useMemo(() => simulatePayoff(sortedDebts, extraPayment), [sortedDebts, extraPayment]);
+  // Simulate minimum only
+  const minOnly = useMemo(() => simulatePayoff(sortedDebts, 0), [sortedDebts]);
 
-  const snowballMonths = estimateMonths(snowball);
-  const avalancheMonths = estimateMonths(avalanche);
+  const timeSaved = minOnly.months - withExtra.months;
+  const interestSaved = minOnly.totalInterest - withExtra.totalInterest;
 
   const addDebt = () => setDebts(p => [...p, { creditor: "", balance: 0, interest_rate: 0, min_payment: 0, payoff_order: p.length + 1, total_paid: 0 }]);
   const removeDebt = (i: number) => setDebts(p => p.filter((_, idx) => idx !== i));
@@ -93,14 +138,12 @@ export function DebtTracker() {
   const handleSave = async () => {
     if (!user) return;
     setSaving(true);
-    // Delete existing and re-insert
     await supabase.from("tracker_debts").delete().eq("user_id", user.id);
     if (debts.length > 0) {
       const { error } = await supabase.from("tracker_debts").insert(debts.map(d => ({ ...d, user_id: user.id, id: undefined })));
       if (error) { toast.error("Failed to save"); setSaving(false); return; }
     }
     toast.success("Debts updated!");
-    // Check milestones
     if (totalPaid >= 1000 || totalPaid >= 5000 || totalPaid >= 10000) {
       setShowConfetti(true);
       setTimeout(() => setShowConfetti(false), 3000);
@@ -108,7 +151,6 @@ export function DebtTracker() {
     setSaving(false);
   };
 
-  // Payoff timeline chart data
   const chartData = debts.filter(d => d.creditor).map(d => ({
     name: d.creditor.slice(0, 12),
     balance: d.balance,
@@ -138,11 +180,11 @@ export function DebtTracker() {
         </div>
         <div className="bg-card rounded-2xl border border-border p-4 text-center">
           <p className="text-xs font-display font-semibold text-muted-foreground uppercase">Snowball</p>
-          <p className="text-xl font-display font-bold text-foreground">{snowballMonths} mo</p>
+          <p className="text-xl font-display font-bold text-foreground">{minOnly.months} mo</p>
         </div>
         <div className="bg-card rounded-2xl border border-border p-4 text-center">
           <p className="text-xs font-display font-semibold text-muted-foreground uppercase">Avalanche</p>
-          <p className="text-xl font-display font-bold text-foreground">{avalancheMonths} mo</p>
+          <p className="text-xl font-display font-bold text-foreground">{minOnly.months} mo</p>
         </div>
       </div>
 
@@ -150,7 +192,7 @@ export function DebtTracker() {
       {totalDebt > 0 && (
         <div className="bg-primary/5 border border-primary/20 rounded-xl p-4 text-center">
           <p className="text-sm font-body text-foreground">
-            You are projected to be debt-free in <strong className="text-primary">{Math.min(snowballMonths, avalancheMonths)} months</strong> 🎯
+            You are projected to be debt-free in <strong className="text-primary">{withExtra.months} months</strong> 🎯
           </p>
         </div>
       )}
@@ -169,6 +211,93 @@ export function DebtTracker() {
               <Bar dataKey="paid" fill="hsl(var(--primary))" radius={[0, 4, 4, 0]} name="Paid Off" />
             </BarChart>
           </ResponsiveContainer>
+        </div>
+      )}
+
+      {/* Debt Payoff Calculator */}
+      {sortedDebts.length > 0 && (
+        <div className="bg-card rounded-2xl border border-border shadow-card p-6 space-y-5">
+          <h3 className="font-display font-bold text-foreground">💳 Debt Payoff Calculator</h3>
+
+          <div className="flex flex-col sm:flex-row gap-4">
+            {/* Method Toggle */}
+            <div className="space-y-1.5">
+              <Label className="text-xs font-body text-muted-foreground">Payoff Method</Label>
+              <ToggleGroup
+                type="single"
+                value={payoffMethod}
+                onValueChange={(v) => v && setPayoffMethod(v as "snowball" | "avalanche")}
+                className="justify-start"
+              >
+                <ToggleGroupItem value="snowball" className="text-xs px-3">❄️ Snowball</ToggleGroupItem>
+                <ToggleGroupItem value="avalanche" className="text-xs px-3">🏔️ Avalanche</ToggleGroupItem>
+              </ToggleGroup>
+              <p className="text-[11px] text-muted-foreground">
+                {payoffMethod === "snowball"
+                  ? "Pay smallest balances first for quick wins"
+                  : "Pay highest interest rates first to save money"}
+              </p>
+            </div>
+
+            {/* Extra Payment */}
+            <div className="space-y-1.5">
+              <Label className="text-xs font-body text-muted-foreground">Extra Monthly Payment</Label>
+              <div className="relative w-40">
+                <span className="absolute left-2 top-1/2 -translate-y-1/2 text-muted-foreground text-xs">$</span>
+                <Input
+                  type="number"
+                  value={extraPayment || ""}
+                  onChange={e => setExtraPayment(Number(e.target.value))}
+                  className="h-9 text-sm pl-6"
+                  placeholder="0"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Ordered Debt List */}
+          <div className="space-y-2">
+            <p className="text-xs font-display font-semibold text-muted-foreground uppercase tracking-wider">Pay In This Order</p>
+            {withExtra.order.map((d, i) => (
+              <div key={i} className="flex items-center gap-3 bg-muted/30 rounded-xl px-4 py-3">
+                <span className="flex-shrink-0 w-7 h-7 rounded-full bg-primary/10 text-primary font-display font-bold text-sm flex items-center justify-center">
+                  {i + 1}
+                </span>
+                <div className="flex-1 min-w-0">
+                  <p className="font-body font-semibold text-foreground text-sm truncate">{d.creditor}</p>
+                  <p className="text-xs text-muted-foreground">
+                    ${d.balance.toLocaleString()} · {d.interest_rate}% APR · ${d.min_payment}/mo min
+                  </p>
+                </div>
+                <div className="text-right flex-shrink-0">
+                  <p className="text-xs font-display font-semibold text-primary">
+                    {d.paidOffMonth > 0 ? `Month ${d.paidOffMonth}` : "—"}
+                  </p>
+                  <p className="text-[11px] text-muted-foreground">paid off</p>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Results */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+            <div className="bg-primary/5 rounded-xl p-3 text-center">
+              <p className="text-xs font-display font-semibold text-muted-foreground uppercase">Payoff Time</p>
+              <p className="text-lg font-display font-bold text-primary">{withExtra.months} mo</p>
+            </div>
+            <div className="bg-primary/5 rounded-xl p-3 text-center">
+              <p className="text-xs font-display font-semibold text-muted-foreground uppercase">Total Interest</p>
+              <p className="text-lg font-display font-bold text-destructive">${withExtra.totalInterest.toLocaleString()}</p>
+            </div>
+            <div className="bg-primary/5 rounded-xl p-3 text-center">
+              <p className="text-xs font-display font-semibold text-muted-foreground uppercase">Time Saved</p>
+              <p className={cn("text-lg font-display font-bold", timeSaved > 0 ? "text-green-500" : "text-foreground")}>{timeSaved > 0 ? `${timeSaved} mo` : "—"}</p>
+            </div>
+            <div className="bg-primary/5 rounded-xl p-3 text-center">
+              <p className="text-xs font-display font-semibold text-muted-foreground uppercase">Interest Saved</p>
+              <p className={cn("text-lg font-display font-bold", interestSaved > 0 ? "text-green-500" : "text-foreground")}>{interestSaved > 0 ? `$${interestSaved.toLocaleString()}` : "—"}</p>
+            </div>
+          </div>
         </div>
       )}
 

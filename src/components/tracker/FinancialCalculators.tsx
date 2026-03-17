@@ -47,39 +47,6 @@ function ResultBox({ label, value, color }: { label: string; value: string; colo
 }
 
 export function FinancialCalculators() {
-  // Debt Payoff
-  const [dpBalance, setDpBalance] = useState(0);
-  const [dpRate, setDpRate] = useState(0);
-  const [dpExtra, setDpExtra] = useState(0);
-  const [dpMin, setDpMin] = useState(0);
-
-  const dpMonthlyRate = dpRate / 100 / 12;
-  const dpPayment = dpMin + dpExtra;
-  let dpMonths = 0;
-  let dpInterest = 0;
-  let dpInterestSaved = 0;
-  if (dpBalance > 0 && dpPayment > dpBalance * dpMonthlyRate) {
-    // With extra
-    let bal = dpBalance;
-    while (bal > 0 && dpMonths < 600) {
-      dpMonths++;
-      const int = bal * dpMonthlyRate;
-      dpInterest += int;
-      bal = bal + int - dpPayment;
-    }
-    // Without extra (min only)
-    let balNoExtra = dpBalance;
-    let monthsNoExtra = 0;
-    let intNoExtra = 0;
-    while (balNoExtra > 0 && monthsNoExtra < 600 && dpMin > balNoExtra * dpMonthlyRate) {
-      monthsNoExtra++;
-      const int = balNoExtra * dpMonthlyRate;
-      intNoExtra += int;
-      balNoExtra = balNoExtra + int - dpMin;
-    }
-    dpInterestSaved = intNoExtra - dpInterest;
-  }
-
   // Savings Goal
   const [sgTarget, setSgTarget] = useState(0);
   const [sgMonthly, setSgMonthly] = useState(0);
@@ -124,22 +91,6 @@ export function FinancialCalculators() {
   return (
     <div className="space-y-4">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {/* Debt Payoff */}
-        <CalcCard title="💳 Debt Payoff Calculator">
-          <div className="grid grid-cols-2 gap-3">
-            <CurrencyInput label="Balance" value={dpBalance} onChange={setDpBalance} />
-            <NumInput label="Interest Rate" value={dpRate} onChange={setDpRate} suffix="%" />
-            <CurrencyInput label="Min Payment" value={dpMin} onChange={setDpMin} />
-            <CurrencyInput label="Extra Payment" value={dpExtra} onChange={setDpExtra} />
-          </div>
-          {dpMonths > 0 && (
-            <div className="grid grid-cols-2 gap-2">
-              <ResultBox label="Payoff Time" value={`${dpMonths} months`} />
-              <ResultBox label="Interest Saved" value={`$${Math.round(dpInterestSaved).toLocaleString()}`} color="text-green-500" />
-            </div>
-          )}
-        </CalcCard>
-
         {/* Savings Goal */}
         <CalcCard title="🎯 Savings Goal Calculator">
           <div className="grid grid-cols-2 gap-3">

@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Loader2, Plus, Trash2, PartyPopper } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
+import { BarChart, Bar, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from "recharts";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 
 interface Debt {
